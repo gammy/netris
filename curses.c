@@ -282,7 +282,7 @@ ExtFunc void ShowDisplayInfo(void)
 		addstr("Waiting for opponent...      ");
 		break;
 	case STATE_WAIT_KEYPRESS:
-		addstr("Press the key for a new game.");
+		printw("Press '%c' for a new game.    ", keyTable[KT_new]);
 		break;
 	default:
 		addstr("                             ");

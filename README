@@ -110,6 +110,8 @@ The keys are:
  'p'	pause
  'f' 	make game faster (irreversible)
  Ctrl-L	redraw the screen
+ 'n' 	start a new network game (only available 
+                                  after a network game has ended)
 
 To see usage information, type "netris -h".
 To see distribution/warranty information, type "netris -H".

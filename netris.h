@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <signal.h>
+#include "keys.h"
 
 #define ExtFunc		/* Marks functions that need prototypes */
 
@@ -64,8 +65,6 @@ typedef long netint4;
 #define ntoh4(x) ntohl(x)
 
 #define DEFAULT_PORT 9284	/* Very arbitrary */
-
-#define DEFAULT_KEYS "jJklL mspf^ln "
 
 /* Protocol versions */
 #define MAJOR_VERSION		1	

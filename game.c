@@ -28,16 +28,12 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 
-enum { KT_left, KT_full_left, KT_rotate, KT_right, KT_full_right, KT_drop, KT_down,
-	KT_toggleSpy, KT_pause, KT_faster, KT_redraw, KT_new, KT_numKeys };
-
 static char *keyNames[KT_numKeys+1] = {
 	"Left", "FullLeft","Rotate", "Right", "FullRight", "Drop", "Down", "ToggleSpy", "Pause",
 	"Faster", "Redraw", "New", NULL };
 
 static char *gameNames[GT_len] = { "OnePlayer", "ClassicTwo" };
 
-static char keyTable[KT_numKeys+1];
 static int dropModeEnable = 0;
 static char *robotProg;
 
