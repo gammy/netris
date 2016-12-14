@@ -112,8 +112,8 @@ ExtFunc void InitScreens(void)
 	move(0, 0);
 	addstr("Netris ");
 	addstr(version_string);
-	addstr(" (C) 1994-1996,1999  Mark H. Weaver     "
-			"\"netris -h\" for more info");
+	addstr(" (C) 1994-2016  Mark H. Weaver et al");
+	mvprintw(0, 55, "\"netris -h\" for more info");
 	statusYPos = 22;
 	statusXPos = 0;
 }

@@ -191,6 +191,9 @@ Makefile config.h: Configure
 
 version.c: VERSION
 	@echo "Creating version.c"
+	@# If git is available, and this is a git repository, and we have a usable
+	@# tag to base the version on, then overwrite VERSION with that.
+	@-git describe --tags > /dev/null 2>&1 && git describe --tags | cut -d '-' -f -2 > VERSION
 	@sed -e 's/^\(.*\)$$/char *version_string = "\1";/' VERSION > $@
 
 proto.h: $(SRCS)
