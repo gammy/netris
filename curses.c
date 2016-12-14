@@ -222,6 +222,28 @@ ExtFunc void InitScreen(int scr)
 	}
 }
 
+ExtFunc void InvertScreen(int scr)
+{
+	int y, x;
+
+	if (scr == 0)
+		boardXPos[scr] = 1;
+    else
+		boardXPos[scr] = boardXPos[scr - 1] +
+					2 * boardWidth[scr - 1] + 3;
+
+	for (y = 0; y < boardVisible[scr]; y++) {
+        int ry = 3 + y;
+		for (x = 0; x < 2 * boardWidth[scr]; x++) {
+            int rx = boardXPos[scr] + x;
+            chtype attrs = mvinch(ry, rx);
+            int colorpair = PAIR_NUMBER(attrs);
+            if (colorpair != 0)
+                mvchgat(ry, rx, 1, A_REVERSE | A_BOLD, colorpair, NULL);
+        }
+	}
+}
+
 ExtFunc void CleanupScreen(int scr)
 {
 }
@@ -289,7 +311,7 @@ ExtFunc void ShowDisplayInfo(void)
 	}
 
 	move(statusYPos - 9, statusXPos);
-	printw("Seed: %d", initSeed);
+	printw("Seed:  %d", initSeed);
 	clrtoeol();
 	move(statusYPos - 8, statusXPos);
 	printw("Speed: %dms", speed / 1000);
