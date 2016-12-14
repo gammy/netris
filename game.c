@@ -567,10 +567,14 @@ ExtFunc int main(int argc, char **argv)
 						opponentHost[i] = '?';
 			}
 			OneGame(0, 1);
+			InvertScreen(0);
+			InvertScreen(1);
 		}
 		else {
 			game = GT_onePlayer;
 			OneGame(0, -1);
+			InvertScreen(0);
+			RefreshScreen();
 		}
 		if (wonLast) {
 			won++;
@@ -583,8 +587,6 @@ ExtFunc int main(int argc, char **argv)
 			CloseRobot();
 		} else {
 			gameState = STATE_WAIT_KEYPRESS;
-			InvertScreen(0);
-			InvertScreen(1);
 			ShowDisplayInfo();
 			RefreshScreen();
 			while(getchar() != keyTable[KT_new])
