@@ -106,6 +106,7 @@ ExtFunc void InitScreens(void)
 
 	cbreak();
 	noecho();
+	curs_set(0);
 	OutputTermStr(term_vi, 0);
 	AddEventGen(&keyGen);
 
