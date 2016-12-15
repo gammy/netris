@@ -16,7 +16,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: shapes.c,v 1.16 1999/05/16 06:56:31 mhw Exp $
  */
 
 #include "netris.h"
