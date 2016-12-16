@@ -592,7 +592,9 @@ ExtFunc int main(int argc, char **argv)
 			RefreshScreen();
 			while(getchar() != keyTable[KT_new])
 				;
-			gameState = STATE_STARTING;
+			gameState = game == GT_onePlayer 
+                ? STATE_STARTING
+                : STATE_WAIT_CONNECTION;
 		}
 	}
 
