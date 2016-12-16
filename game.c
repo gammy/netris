@@ -580,7 +580,8 @@ ExtFunc int main(int argc, char **argv)
 			won++;
 		} else {
 			lost++;
-			WaitMyEvent(&event, EM_net);
+			if(game != GT_onePlayer)
+				WaitMyEvent(&event, EM_net);
 		}
 		CloseNet();
 		if (robotEnable) {
@@ -591,6 +592,7 @@ ExtFunc int main(int argc, char **argv)
 			RefreshScreen();
 			while(getchar() != keyTable[KT_new])
 				;
+			gameState = STATE_STARTING;
 		}
 	}
 
