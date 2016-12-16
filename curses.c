@@ -288,7 +288,7 @@ ExtFunc void PlotUnderline(int scr, int x, int flag)
 
 ExtFunc void ShowDisplayInfo(void)
 {
-	if (game == GT_classicTwo) {
+	if (gameType == GT_classicTwo) {
 		move(statusYPos - 5, statusXPos);
 		printw("Enemy lines: %3d/%4d", enemyLinesCleared, enemyTotalLinesCleared);
 	}

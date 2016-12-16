@@ -158,7 +158,7 @@ enum States {
 	STATE_WAIT_KEYPRESS
 };
 
-EXT GameType game;
+EXT GameType gameType;
 EXT int boardHeight[MAX_SCREENS];
 EXT int boardVisible[MAX_SCREENS], boardWidth[MAX_SCREENS];
 EXT Shape *curShape[MAX_SCREENS];

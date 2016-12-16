@@ -113,7 +113,7 @@ ExtFunc void OneGame(int scr, int scr2)
 	ShowDisplayInfo();
 	SetITimer(speed, speed);
 	if (robotEnable) {
-		RobotCmd(0, "GameType %s\n", gameNames[game]);
+		RobotCmd(0, "GameType %s\n", gameNames[gameType]);
 		RobotCmd(0, "BoardSize 0 %d %d\n",
 				boardVisible[scr], boardWidth[scr]);
 		if (scr2 >= 0) {
@@ -216,7 +216,7 @@ ExtFunc void OneGame(int scr, int scr2)
 							break;
 						case KT_pause:
 							pausedByMe = !pausedByMe;
-							if (game == GT_classicTwo) {
+							if (gameType == GT_classicTwo) {
 								netint2 data[1];
 
 								data[0] = hton2(pausedByMe);
@@ -230,7 +230,7 @@ ExtFunc void OneGame(int scr, int scr2)
 							changed = 1;
 							break;
 						case KT_faster:
-							if (game != GT_onePlayer)
+							if (gameType != GT_onePlayer)
 								break;
 							speed = speed * 0.8;
 							SetITimer(speed, SetITimer(0, 0));
@@ -373,7 +373,7 @@ ExtFunc void OneGame(int scr, int scr2)
 		}
 		if (linesCleared > 0 && spied)
 			SendPacket(NP_clear, 0, NULL);
-		if (game == GT_classicTwo && linesCleared > 1) {
+		if (gameType == GT_classicTwo && linesCleared > 1) {
 			short junkLines;
 			netint2 data[1];
 
@@ -465,7 +465,7 @@ ExtFunc int main(int argc, char **argv)
 		if (!initSeed)
 			SRandom(time(0));
 		if (initConn || waitConn) {
-			game = GT_classicTwo;
+			gameType = GT_classicTwo;
 			if(gameState != STATE_STARTING) {
 				gameState = STATE_WAIT_CONNECTION;
 				ShowDisplayInfo();
@@ -571,7 +571,7 @@ ExtFunc int main(int argc, char **argv)
 			InvertScreen(1);
 		}
 		else {
-			game = GT_onePlayer;
+			gameType = GT_onePlayer;
 			OneGame(0, -1);
 			InvertScreen(0);
 			RefreshScreen();
@@ -580,7 +580,7 @@ ExtFunc int main(int argc, char **argv)
 			won++;
 		} else {
 			lost++;
-			if(game != GT_onePlayer)
+			if(gameType != GT_onePlayer)
 				WaitMyEvent(&event, EM_net);
 		}
 		CloseNet();
@@ -592,7 +592,7 @@ ExtFunc int main(int argc, char **argv)
 			RefreshScreen();
 			while(getchar() != keyTable[KT_new])
 				;
-			gameState = game == GT_onePlayer 
+			gameState = gameType == GT_onePlayer 
                 ? STATE_STARTING
                 : STATE_WAIT_CONNECTION;
 		}
