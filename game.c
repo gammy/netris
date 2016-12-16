@@ -100,7 +100,7 @@ ExtFunc void OneGame(int scr, int scr2)
 	int key;
 	char *p, *cmd;
 
-	myLinesCleared = enemyLinesCleared = 0;
+	myLinesCleared = opponentLinesCleared = 0;
 	speed = stepDownInterval;
 	ResetBaseTime();
 	InitBoard(scr);
@@ -314,8 +314,8 @@ ExtFunc void OneGame(int scr, int scr2)
 							{
 								int cleared = ClearFullLines(scr2);
 								if (cleared) {
-									enemyLinesCleared += cleared;
-									enemyTotalLinesCleared += cleared;
+									opponentLinesCleared += cleared;
+									opponentTotalLinesCleared += cleared;
 									ShowDisplayInfo();
 									RefreshScreen();
 								}
@@ -390,9 +390,10 @@ gameOver:
 
 ExtFunc int main(int argc, char **argv)
 {
-	int initConn = 0, waitConn = 0, ch, done = 0;
+	int ch, done = 0;
 	char *hostStr = NULL, *portStr = NULL;
 	MyEvent event;
+    initConn = waitConn = 0;
 
 	standoutEnable = colorEnable = 1;
 	stepDownInterval = DEFAULT_INTERVAL;
@@ -471,6 +472,10 @@ ExtFunc int main(int argc, char **argv)
 				ShowDisplayInfo();
 				RefreshScreen();
 			}
+            InitBoard(0);
+            InitBoard(1);
+			ShowDisplayInfo();
+			RefreshScreen();
 			if (initConn)
 				InitiateConnection(hostStr, portStr);
 			else if (waitConn)

@@ -89,6 +89,8 @@ typedef long netint4;
 #define EM_robot			000010
 #define EM_any				000777
 
+int initConn, waitConn;
+
 typedef enum _GameType { GT_onePlayer, GT_classicTwo, GT_len } GameType;
 typedef enum _BlockTypeA { BT_none, BT_white, BT_blue, BT_magenta,
 							BT_cyan, BT_yellow, BT_green, BT_red,
@@ -182,9 +184,9 @@ extern ShapeOption stdOptions[];
 extern char *version_string;
 
 EXT int myLinesCleared;
-EXT int enemyLinesCleared;
+EXT int opponentLinesCleared;
 EXT int myTotalLinesCleared;
-EXT int enemyTotalLinesCleared;
+EXT int opponentTotalLinesCleared;
 
 #include "proto.h"
 

@@ -115,6 +115,7 @@ ExtFunc void InitScreens(void)
 	addstr(version_string);
 	addstr(" (C) 1994-2016  Mark H. Weaver et al");
 	mvprintw(0, 55, "\"netris -h\" for more info");
+
 	statusYPos = 22;
 	statusXPos = 0;
 }
@@ -288,19 +289,31 @@ ExtFunc void PlotUnderline(int scr, int x, int flag)
 
 ExtFunc void ShowDisplayInfo(void)
 {
-	if (gameType == GT_classicTwo) {
-		move(statusYPos - 5, statusXPos);
-		printw("Enemy lines: %3d/%4d", enemyLinesCleared, enemyTotalLinesCleared);
-	}
-	move(statusYPos - 4, statusXPos);
-	printw("My lines:    %3d/%4d", myLinesCleared, myTotalLinesCleared);
-	move(statusYPos - 3, statusXPos);
-	printw("Won:  %3d", won);
-	move(statusYPos - 2, statusXPos);
-	printw("Lost: %3d", lost);
+    mvprintw(statusYPos - 6, statusXPos + 13, "Me");
+    if(gameType == GT_classicTwo)
+        addstr("  Opponent");
+    mvprintw(statusYPos - 5, statusXPos, "Wins");
+    mvprintw(statusYPos - 4, statusXPos, "Rows");
+    mvprintw(statusYPos - 3, statusXPos, "Rows (total)");
+
+    mvprintw(statusYPos - 5, statusXPos + 12, "%3d", won);
+    mvprintw(statusYPos - 4, statusXPos + 12, "%3d", myLinesCleared);
+    mvprintw(statusYPos - 3, statusXPos + 12, "%3d", myTotalLinesCleared);
+
+    if(gameType == GT_classicTwo) {
+        mvprintw(statusYPos - 5, statusXPos + 22, "%3d", lost);
+        mvprintw(statusYPos - 4, statusXPos + 22, "%3d", opponentLinesCleared);
+        mvprintw(statusYPos - 3, statusXPos + 22, "%3d", 
+                 opponentTotalLinesCleared);
+    }
 
 	move(statusYPos - 1, statusXPos);
 	switch(gameState) {
+    case STATE_STARTING:
+        addstr(initConn 
+               ? "Connecting to opponent..."
+               : "Waiting for opponent...");
+        break;
 	case STATE_WAIT_CONNECTION:
 		addstr("Waiting for opponent...      ");
 		break;
@@ -308,7 +321,8 @@ ExtFunc void ShowDisplayInfo(void)
 		printw("Press '%c' for a new game.    ", keyTable[KT_new]);
 		break;
 	default:
-		addstr("                             ");
+		clrtoeol();
+		//addstr("                             ");
 	}
 
 	move(statusYPos - 9, statusXPos);
