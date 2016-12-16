@@ -240,7 +240,7 @@ ExtFunc void InvertScreen(int scr)
 			chtype attrs = mvinch(ry, rx);
 			int colorpair = PAIR_NUMBER(attrs);
 			if (colorpair != 0)
-				mvchgat(ry, rx, 1, A_REVERSE | A_BOLD, colorpair, NULL);
+				mvchgat(ry, rx, 1, A_REVERSE, colorpair, NULL);
 		}
 	}
 }
