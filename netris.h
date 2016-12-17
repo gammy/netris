@@ -27,7 +27,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <signal.h>
-#include "keys.h"
 
 #define ExtFunc		/* Marks functions that need prototypes */
 
@@ -89,7 +88,25 @@ typedef long netint4;
 #define EM_robot			000010
 #define EM_any				000777
 
-int initConn, waitConn;
+#define DEFAULT_KEYS "jJklL mspf^ln "
+
+enum { 
+	KT_left, 
+	KT_full_left, 
+	KT_rotate, 
+	KT_right, 
+	KT_full_right, 
+	KT_drop, 
+	KT_down,
+	KT_toggleSpy, 
+	KT_pause, 
+	KT_faster, 
+	KT_redraw, 
+	KT_new, 
+	KT_numKeys 
+};
+
+char keyTable[KT_numKeys + 1];
 
 typedef enum _GameType { GT_onePlayer, GT_classicTwo, GT_len } GameType;
 typedef enum _BlockTypeA { BT_none, BT_white, BT_blue, BT_magenta,
@@ -152,6 +169,14 @@ typedef struct _ShapeOption {
 
 typedef int (*ShapeDrawFunc)(int scr, int y, int x,
 					BlockType type, void *data);
+
+enum NetType {
+	NET_INVALID,
+	NET_CLIENT,
+	NET_SERVER
+};
+
+int netType;
 
 enum States {
 	STATE_STARTING,

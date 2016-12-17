@@ -38,7 +38,7 @@ static EventGenRec netGen = { NULL, 0, FT_read, -1, NetGenFunc, EM_net };
 
 static char netBuf[64];
 static int netBufSize, netBufGoal = HEADER_SIZE;
-static int isServer, lostConn, gotEndConn;
+static int lostConn, gotEndConn;
 
 ExtFunc void InitNet(void)
 {
@@ -95,7 +95,6 @@ ExtFunc int WaitForConnection(char *portStr)
 		}
 	}
 	AddEventGen(&netGen);
-	isServer = 1;
 	return 0;
 }
 
@@ -198,7 +197,7 @@ ExtFunc void CloseNet(void)
 	if (sock >= 0) {
 		if (!lostConn) {
 			SendPacket(NP_endConn, 0, NULL);
-			if (isServer) {
+			if (netType == NET_SERVER) {
 				while (!lostConn)
 					WaitMyEvent(&event, EM_net);
 			}

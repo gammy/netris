@@ -110,6 +110,7 @@ ExtFunc void OneGame(int scr, int scr2)
 		InitBoard(scr2);
 		UpdateOpponentDisplay();
 	}
+	ClearStatus();
 	ShowDisplayInfo();
 	SetITimer(speed, speed);
 	if (robotEnable) {
@@ -393,7 +394,7 @@ ExtFunc int main(int argc, char **argv)
 	int ch, done = 0;
 	char *hostStr = NULL, *portStr = NULL;
 	MyEvent event;
-    initConn = waitConn = 0;
+	netType = NET_INVALID;
 
 	standoutEnable = colorEnable = 1;
 	stepDownInterval = DEFAULT_INTERVAL;
@@ -401,11 +402,11 @@ ExtFunc int main(int argc, char **argv)
 	while ((ch = getopt(argc, argv, "hHRs:r:Fk:c:woDSCp:i:")) != -1)
 		switch (ch) {
 			case 'c':
-				initConn = 1;
+				netType = NET_CLIENT;
 				hostStr = optarg;
 				break;
 			case 'w':
-				waitConn = 1;
+				netType = NET_SERVER;
 				break;
 			case 'p':
 				portStr = optarg;
@@ -451,7 +452,7 @@ ExtFunc int main(int argc, char **argv)
 				Usage();
 				exit(1);
 		}
-	if (optind < argc || (initConn && waitConn)) {
+	if (optind < argc) {
 		Usage();
 		exit(1);
 	}
@@ -465,24 +466,20 @@ ExtFunc int main(int argc, char **argv)
 		InitNet();
 		if (!initSeed)
 			SRandom(time(0));
-		if (initConn || waitConn) {
+		if (netType != NET_INVALID) {
 			gameType = GT_classicTwo;
-			if(gameState != STATE_STARTING) {
-				gameState = STATE_WAIT_CONNECTION;
-				ShowDisplayInfo();
-				RefreshScreen();
-			}
-            InitBoard(0);
-            InitBoard(1);
+			InitBoard(0);
+			InitBoard(1);
+			PrintStatus(netType == NET_CLIENT
+						? "Connecting to opponent..."
+						: "Waiting for opponent..."); 
 			ShowDisplayInfo();
 			RefreshScreen();
-			if (initConn)
+			if (netType == NET_CLIENT)
 				InitiateConnection(hostStr, portStr);
-			else if (waitConn)
+			else if (netType == NET_SERVER)
 				WaitForConnection(portStr);
-			gameState = STATE_PLAYING;
-			ShowDisplayInfo();
-			RefreshScreen();
+			ClearStatus();
 			{
 				netint4 data[2];
 				int major;
@@ -497,16 +494,16 @@ ExtFunc int main(int argc, char **argv)
 				protocolVersion = ntoh4(data[1]);
 				if (event.u.net.type != NP_version || major < MAJOR_VERSION)
 					fatal("Your opponent is using an old, incompatible version\n"
-					      "of Netris.  They should get the latest version.");
+						  "of Netris.  They should get the latest version.");
 				if (major > MAJOR_VERSION)
 					fatal("Your opponent is using an newer, incompatible version\n"
-					      "of Netris.  Get the latest version.");
+						  "of Netris.  Get the latest version.");
 				if (protocolVersion > PROTOCOL_VERSION)
 					protocolVersion = PROTOCOL_VERSION;
 			}
 			if (protocolVersion < 3 && stepDownInterval != DEFAULT_INTERVAL)
 				fatal("Your opponent's version of Netris predates the -i option.\n"
-				      "For fairness, you shouldn't use the -i option either.");
+					  "For fairness, you shouldn't use the -i option either.");
 			{
 				netint4 data[3];
 				int len;
@@ -520,28 +517,28 @@ ExtFunc int main(int argc, char **argv)
 					seed = initSeed;
 				else
 					seed = time(0);
-				if (waitConn)
+				if (netType == NET_SERVER)
 					SRandom(seed);
 				data[0] = hton4(myFlags);
 				data[1] = hton4(seed);
 				data[2] = hton4(stepDownInterval);
 				SendPacket(NP_startConn, len, data);
 				if (WaitMyEvent(&event, EM_net) != E_net ||
-				    event.u.net.type != NP_startConn)
+					event.u.net.type != NP_startConn)
 					fatal("Network negotiation failed");
 				memcpy(data, event.u.net.data, len);
 				opponentFlags = ntoh4(data[0]);
 				seed = ntoh4(data[1]);
-				if (initConn) {
+				if (netType == NET_CLIENT) {
 					if ((opponentFlags & SCF_setSeed) != (myFlags & SCF_setSeed))
 						fatal("If one player sets the random number seed, "
-						      "both must.");
+							  "both must.");
 					if ((myFlags & SCF_setSeed) && seed != initSeed)
 						fatal("Both players have set the random number seed, "
-						      "and they are unequal.");
+							  "and they are unequal.");
 					if (protocolVersion >= 3 && stepDownInterval != ntoh4(data[2]))
 						fatal("Your opponent is using a different step-down "
-						      "interval (-i).\nYou must both use the same one.");
+							  "interval (-i).\nYou must both use the same one.");
 					SRandom(seed);
 				}
 			}
@@ -559,7 +556,7 @@ ExtFunc int main(int argc, char **argv)
 					len = sizeof(opponentName);
 				SendPacket(NP_userName, len, userName);
 				if (WaitMyEvent(&event, EM_net) != E_net ||
-				    event.u.net.type != NP_userName)
+					event.u.net.type != NP_userName)
 					fatal("Network negotiation failed");
 				strncpy(opponentName, event.u.net.data,
 					sizeof(opponentName)-1);
@@ -581,25 +578,27 @@ ExtFunc int main(int argc, char **argv)
 			InvertScreen(0);
 			RefreshScreen();
 		}
+
 		if (wonLast) {
 			won++;
 		} else {
 			lost++;
-			if(gameType != GT_onePlayer)
+			if(gameType != GT_onePlayer) {
+				// FIXME: A race condition occurrs here IF THERE IS A DRAW,
+				// resulting in both sides waiting forever.
 				WaitMyEvent(&event, EM_net);
+			}
 		}
 		CloseNet();
+
 		if (robotEnable) {
 			CloseRobot();
 		} else {
-			gameState = STATE_WAIT_KEYPRESS;
 			ShowDisplayInfo();
+			PrintStatus("Press '%c' for a new game.", keyTable[KT_new]);
 			RefreshScreen();
 			while(getchar() != keyTable[KT_new])
 				;
-			gameState = gameType == GT_onePlayer 
-                ? STATE_STARTING
-                : STATE_WAIT_CONNECTION;
 		}
 	}
 

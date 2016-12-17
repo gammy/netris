@@ -267,7 +267,7 @@ static void PlotBlock1(int scr, int y, int x, BlockType type)
 				attrset(COLOR_PAIR(colorIndex));
 			else
 #endif
-				standout();
+			standout();
 		}
 
 		addstr(type > 0 ? "[]" : "$$");
@@ -287,43 +287,26 @@ ExtFunc void PlotUnderline(int scr, int x, int flag)
 	addstr(flag ? "==" : "--");
 }
 
+ExtFunc void ClearStatus(void)
+{
+	move(statusYPos - 1, statusXPos);
+	clrtoeol();
+	refresh();
+}
+
+ExtFunc void PrintStatus(const char *fmt, ...)
+{
+	va_list argp;
+	move(statusYPos - 1, statusXPos);
+	va_start(argp, fmt);
+	vw_printw(stdscr, fmt, argp);
+	va_end(argp);
+	clrtoeol();
+	refresh();
+}
+
 ExtFunc void ShowDisplayInfo(void)
 {
-    mvprintw(statusYPos - 6, statusXPos + 13, "Me");
-    if(gameType == GT_classicTwo)
-        addstr("  Opponent");
-    mvprintw(statusYPos - 5, statusXPos, "Wins");
-    mvprintw(statusYPos - 4, statusXPos, "Rows");
-    mvprintw(statusYPos - 3, statusXPos, "Rows (total)");
-
-    mvprintw(statusYPos - 5, statusXPos + 12, "%3d", won);
-    mvprintw(statusYPos - 4, statusXPos + 12, "%3d", myLinesCleared);
-    mvprintw(statusYPos - 3, statusXPos + 12, "%3d", myTotalLinesCleared);
-
-    if(gameType == GT_classicTwo) {
-        mvprintw(statusYPos - 5, statusXPos + 22, "%3d", lost);
-        mvprintw(statusYPos - 4, statusXPos + 22, "%3d", opponentLinesCleared);
-        mvprintw(statusYPos - 3, statusXPos + 22, "%3d", 
-                 opponentTotalLinesCleared);
-    }
-
-	move(statusYPos - 1, statusXPos);
-	switch(gameState) {
-    case STATE_STARTING:
-        addstr(initConn 
-               ? "Connecting to opponent..."
-               : "Waiting for opponent...");
-        break;
-	case STATE_WAIT_CONNECTION:
-		addstr("Waiting for opponent...      ");
-		break;
-	case STATE_WAIT_KEYPRESS:
-		printw("Press '%c' for a new game.    ", keyTable[KT_new]);
-		break;
-	default:
-		clrtoeol();
-		//addstr("                             ");
-	}
 
 	move(statusYPos - 9, statusXPos);
 	printw("Seed:  %d", initSeed);
@@ -331,22 +314,44 @@ ExtFunc void ShowDisplayInfo(void)
 	move(statusYPos - 8, statusXPos);
 	printw("Speed: %dms", speed / 1000);
 	clrtoeol();
-	if (robotEnable) {
-		move(statusYPos - 7, statusXPos);
-		if (fairRobot)
-			addstr("Controlled by a fair robot");
-		else
-			addstr("Controlled by a robot");
-		clrtoeol();
-	}
-	if (opponentFlags & SCF_usingRobot) {
-		move(statusYPos - 6, statusXPos);
-		if (opponentFlags & SCF_fairRobot)
-			addstr("The opponent is a fair robot");
-		else
-			addstr("The opponent is a robot");
-		clrtoeol();
-	}
+
+    if(gameType == GT_onePlayer) {
+        mvprintw(statusYPos - 6, statusXPos, "Won         %3d", 
+                 won);
+        mvprintw(statusYPos - 5, statusXPos, "Lost        %3d", 
+                 lost);
+        mvprintw(statusYPos - 4, statusXPos, "Rows        %3d", 
+                 myLinesCleared);
+        mvprintw(statusYPos - 3, statusXPos, "Rows (total)%3d", 
+                 myTotalLinesCleared);
+    } else {
+        move(statusYPos - 7, statusXPos + 10);
+        addstr(robotEnable ? "Robot" : "   Me");
+
+        move(statusYPos - 7, statusXPos + 17);
+        if((opponentFlags & SCF_usingRobot)) {
+            addstr("   Robot");
+            if(opponentFlags & SCF_fairRobot)
+                addstr("(fair)");
+        } else
+            addstr("Opponent");
+        clrtoeol();
+
+        mvprintw(statusYPos - 6, statusXPos, "Won         %3d", 
+                 won);
+        mvprintw(statusYPos - 5, statusXPos, "Rows        %3d", 
+                 myLinesCleared);
+        mvprintw(statusYPos - 4, statusXPos, "Rows (total)%3d", 
+                 myTotalLinesCleared);
+
+		mvprintw(statusYPos - 6, statusXPos + 22, "%3d", 
+                 lost);
+		mvprintw(statusYPos - 5, statusXPos + 22, "%3d", 
+                 opponentLinesCleared);
+		mvprintw(statusYPos - 4, statusXPos + 22, "%3d", 
+				 opponentTotalLinesCleared);
+    }
+
 }
 
 ExtFunc void UpdateOpponentDisplay(void)
@@ -358,16 +363,21 @@ ExtFunc void UpdateOpponentDisplay(void)
 
 ExtFunc void ShowPause(int pausedByMe, int pausedByThem)
 {
-	move(statusYPos - 3, statusXPos);
-	if (pausedByThem)
-		addstr("Game paused by opponent");
-	else
-		clrtoeol();
 	move(statusYPos - 2, statusXPos);
-	if (pausedByMe)
-		addstr("Game paused by you");
-	else
+
+	if(! pausedByThem && ! pausedByMe) {
 		clrtoeol();
+		return;
+	}
+
+	if(pausedByMe && pausedByThem)
+		printw("Paused by you & opponent");
+	else if(pausedByMe)
+		printw("Paused by you");
+	else if(pausedByThem)
+		printw("Paused by opponent");
+
+	clrtoeol();
 }
 
 ExtFunc void Message(char *s)
