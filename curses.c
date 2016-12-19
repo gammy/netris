@@ -16,7 +16,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: curses.c,v 1.33 1999/05/16 06:56:25 mhw Exp $
+ * For more riveting literature, see the X/Open Issue 4 Version 2 Standard:
+ * http://pubs.opengroup.org/onlinepubs/9693989999/toc.pdf
  */
 
 #include "netris.h"
@@ -29,107 +30,28 @@
 #include <stdlib.h>
 
 #ifdef NCURSES_VERSION
-# define HAVE_NCURSES
+// PDCurses *also* sets NCURSES_VERSION, and supports the same features
+#define HAVE_ENHANCED_CURSES
 #endif
 
-#ifdef HAVE_NCURSES
-static struct
-{
-	BlockType type;
-	short color;
-} myColorTable[] =
-{
-	{ BT_white,		COLOR_WHITE },
-	{ BT_blue,		COLOR_BLUE },
-	{ BT_magenta,	COLOR_MAGENTA },
-	{ BT_cyan,		COLOR_CYAN },
-	{ BT_yellow,	COLOR_YELLOW },
-	{ BT_green,		COLOR_GREEN },
-	{ BT_red,		COLOR_RED },
-	{ BT_none, 0 }
-};
-#endif
-
-static void PlotBlock1(int scr, int y, int x, BlockType type);
-static MyEventType KeyGenFunc(EventGenRec *gen, MyEvent *event);
-
-static EventGenRec keyGen =
-		{ NULL, 0, FT_read, STDIN_FILENO, KeyGenFunc, EM_key };
-
-static int boardYPos[MAX_SCREENS], boardXPos[MAX_SCREENS];
-static int statusYPos, statusXPos;
-static int haveColor;
-static int screens_dirty = 0;
+#ifndef HAVE_ENHANCED_CURSES
+#warn Compiling without enhanced curses support
 
 static char *term_vi;	/* String to make cursor invisible */
 static char *term_ve;	/* String to make cursor visible */
 
-ExtFunc void InitScreens(void)
-{
-	MySigSet oldMask;
-
-	GetTermcapInfo();
-
-	/*
-	 * Block signals while initializing curses.  Otherwise a badly timed
-	 * Ctrl-C during initialization might leave the terminal in a bad state.
-	 */
-	BlockSignals(&oldMask, SIGINT, 0);
-	initscr();
-
-#ifdef CURSES_HACK
-	{
-		extern char *CS;
-
-		CS = 0;
+int curs_set(int visibility) {
+	if(visibility == 0)
+		fputs(term_vi, stdout);
+	else {
+		fputs(term_ve, stdout);
+		fflush(stdout);
 	}
-#endif
-
-#ifdef HAVE_NCURSES
-	haveColor = colorEnable && has_colors();
-	if (haveColor)
-	{
-		int i = 0;
-
-		start_color();
-		for (i = 0; myColorTable[i].type != BT_none; ++i)
-			init_pair(myColorTable[i].type, COLOR_BLACK,
-					myColorTable[i].color);
-	}
-#else
-	haveColor = 0;
-#endif
-
-	AtExit(CleanupScreens);
-	screens_dirty = 1;
-	RestoreSignals(NULL, &oldMask);
-
-	cbreak();
-	noecho();
-	curs_set(0);
-	OutputTermStr(term_vi, 0);
-	AddEventGen(&keyGen);
-
-	move(0, 0);
-	addstr("Netris ");
-	addstr(version_string);
-	addstr(" (C) 1994-2016  Mark H. Weaver et al");
-	mvprintw(0, 55, "\"netris -h\" for more info");
-
-	statusYPos = 22;
-	statusXPos = 0;
+	return(0);
 }
 
-ExtFunc void CleanupScreens(void)
-{
-	if (screens_dirty) {
-		RemoveEventGen(&keyGen);
-		endwin();
-		OutputTermStr(term_ve, 1);
-		screens_dirty = 0;
-	}
-}
-
+/* Attempt to obtain hide/show cursor codes via termcap, or
+ * revert to hardcoded defaults if such a lookup fails */
 ExtFunc void GetTermcapInfo(void)
 {
 	char *term, *buf, *data;
@@ -150,8 +72,8 @@ ExtFunc void GetTermcapInfo(void)
 		 * because if I guess the prototype, I might be wrong, especially
 		 * with regards to "const".
 		 */
-		term_vi = (char *)tgetstr("vi", &data);
-		term_ve = (char *)tgetstr("ve", &data);
+		term_vi = (char *)tgetstr("vi", &data); // vi - DECTCEM Hide cursor
+		term_ve = (char *)tgetstr("ve", &data); // ve - DECTCEM	Shows the cursor.
 
 		/* Okay, so I'm paranoid; I just don't like unsafe routines */
 		if (data > buf + bufSize)
@@ -186,12 +108,105 @@ ExtFunc void GetTermcapInfo(void)
 		term_vi = term_ve = NULL;
 }
 
-ExtFunc void OutputTermStr(char *str, int flush)
+#else
+
+static struct
 {
-	if (str) {
-		fputs(str, stdout);
-		if (flush)
-			fflush(stdout);
+	BlockType type;
+	short color;
+} myColorTable[] =
+{
+	{ BT_white,		COLOR_WHITE },
+	{ BT_blue,		COLOR_BLUE },
+	{ BT_magenta,	COLOR_MAGENTA },
+	{ BT_cyan,		COLOR_CYAN },
+	{ BT_yellow,	COLOR_YELLOW },
+	{ BT_green,		COLOR_GREEN },
+	{ BT_red,		COLOR_RED },
+	{ BT_none, 0 }
+};
+
+#endif
+
+static void PlotBlock1(int scr, int y, int x, BlockType type);
+static MyEventType KeyGenFunc(EventGenRec *gen, MyEvent *event);
+
+static EventGenRec keyGen =
+		{ NULL, 0, FT_read, STDIN_FILENO, KeyGenFunc, EM_key };
+
+static int boardYPos[MAX_SCREENS], boardXPos[MAX_SCREENS];
+static int statusYPos, statusXPos;
+static int haveColor;
+static int screens_dirty = 0;
+
+ExtFunc void InitScreens(void)
+{
+	MySigSet oldMask;
+
+	/*
+	 * Block signals while initializing curses.  Otherwise a badly timed
+	 * Ctrl-C during initialization might leave the terminal in a bad state.
+	 */
+	BlockSignals(&oldMask, SIGINT, 0);
+
+	initscr();
+
+#ifdef CURSES_HACK
+	{
+		extern char *CS;
+
+		CS = 0;
+	}
+#endif
+
+#ifdef HAVE_ENHANCED_CURSES
+	colorEnable = 1;
+	haveColor = colorEnable && has_colors();
+	if (haveColor)
+	{
+		start_color();
+		// X/Open Curses Issue 4, Version 2 makes no mention of 
+		// `use_default_colors()`, but at least ncurses and pdcurses has it.
+		// This should assist in supporting modern VTs with support for 
+		// such things as RGB colors and transparent backgrounds>
+		use_default_colors();
+
+		int i = 0;
+		for (i = 0; myColorTable[i].type != BT_none; ++i)
+			init_pair(myColorTable[i].type, COLOR_BLACK,
+					  myColorTable[i].color);
+	}
+#else
+	haveColor = 0;
+	GetTermcapInfo();
+#endif
+
+	AtExit(CleanupScreens);
+	screens_dirty = 1;
+	RestoreSignals(NULL, &oldMask);
+
+	cbreak();
+	noecho();
+	curs_set(0);
+	AddEventGen(&keyGen);
+
+	move(0, 0);
+	addstr("Netris ");
+	addstr(version_string);
+	addstr(" (C) 1994-2016  Mark H. Weaver et al");
+	mvprintw(0, 55, "\"netris -h\" for more info");
+
+	statusYPos = 22;
+	statusXPos = 0;
+}
+
+ExtFunc void CleanupScreens(void)
+{
+	if (screens_dirty) {
+		RemoveEventGen(&keyGen);
+		endwin();
+		curs_set(1);
+		screens_dirty = 0;
 	}
 }
 
@@ -262,12 +277,13 @@ static void PlotBlock1(int scr, int y, int x, BlockType type)
 	{
 		if (standoutEnable)
 		{
-#ifdef HAVE_NCURSES
+
+#ifdef COLOR_PAIR
 			if (haveColor)
 				attrset(COLOR_PAIR(colorIndex));
 			else
 #endif
-			standout();
+				standout();
 		}
 
 		addstr(type > 0 ? "[]" : "$$");
@@ -315,42 +331,42 @@ ExtFunc void ShowDisplayInfo(void)
 	printw("Speed: %dms", speed / 1000);
 	clrtoeol();
 
-    if(gameType == GT_onePlayer) {
-        mvprintw(statusYPos - 6, statusXPos, "Won         %3d", 
-                 won);
-        mvprintw(statusYPos - 5, statusXPos, "Lost        %3d", 
-                 lost);
-        mvprintw(statusYPos - 4, statusXPos, "Rows        %3d", 
-                 myLinesCleared);
-        mvprintw(statusYPos - 3, statusXPos, "Rows (total)%3d", 
-                 myTotalLinesCleared);
-    } else {
-        move(statusYPos - 7, statusXPos + 10);
-        addstr(robotEnable ? "Robot" : "   Me");
+	if(gameType == GT_onePlayer) {
+		mvprintw(statusYPos - 6, statusXPos, "Won         %3d", 
+				 won);
+		mvprintw(statusYPos - 5, statusXPos, "Lost        %3d", 
+				 lost);
+		mvprintw(statusYPos - 4, statusXPos, "Rows        %3d", 
+				 myLinesCleared);
+		mvprintw(statusYPos - 3, statusXPos, "Rows (total)%3d", 
+				 myTotalLinesCleared);
+	} else {
+		move(statusYPos - 7, statusXPos + 10);
+		addstr(robotEnable ? "Robot" : "   Me");
 
-        move(statusYPos - 7, statusXPos + 17);
-        if((opponentFlags & SCF_usingRobot)) {
-            addstr("   Robot");
-            if(opponentFlags & SCF_fairRobot)
-                addstr("(fair)");
-        } else
-            addstr("Opponent");
-        clrtoeol();
+		move(statusYPos - 7, statusXPos + 17);
+		if((opponentFlags & SCF_usingRobot)) {
+			addstr("   Robot");
+			if(opponentFlags & SCF_fairRobot)
+				addstr("(fair)");
+		} else
+			addstr("Opponent");
+		clrtoeol();
 
-        mvprintw(statusYPos - 6, statusXPos, "Won         %3d", 
-                 won);
-        mvprintw(statusYPos - 5, statusXPos, "Rows        %3d", 
-                 myLinesCleared);
-        mvprintw(statusYPos - 4, statusXPos, "Rows (total)%3d", 
-                 myTotalLinesCleared);
+		mvprintw(statusYPos - 6, statusXPos, "Won         %3d", 
+				 won);
+		mvprintw(statusYPos - 5, statusXPos, "Rows        %3d", 
+				 myLinesCleared);
+		mvprintw(statusYPos - 4, statusXPos, "Rows (total)%3d", 
+				 myTotalLinesCleared);
 
 		mvprintw(statusYPos - 6, statusXPos + 22, "%3d", 
-                 lost);
+				 lost);
 		mvprintw(statusYPos - 5, statusXPos + 22, "%3d", 
-                 opponentLinesCleared);
+				 opponentLinesCleared);
 		mvprintw(statusYPos - 4, statusXPos + 22, "%3d", 
 				 opponentTotalLinesCleared);
-    }
+	}
 
 }
 
