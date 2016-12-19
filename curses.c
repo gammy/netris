@@ -24,10 +24,11 @@
 #include <time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <term.h>
 #include <curses.h>
+#include <term.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #ifdef NCURSES_VERSION
 // PDCurses *also* sets NCURSES_VERSION, and supports the same features
@@ -53,30 +54,43 @@ ExtFunc void GetTermcapInfo(void)
 	char *term, *buf, *data;
 	int bufSize = 10240;
 
-	if (!(term = getenv("TERM")))
+	if (!(term = getenv("TERM"))) {
+		fprintf(stderr, "TERM environment variable is not set\n");
 		return;
-	if (tgetent(scratch, term) == 1) {
-		/*
-		 * Make the buffer HUGE, since tgetstr is unsafe.
-		 * Allocate it on the heap too.
-		 */
-		data = buf = malloc(bufSize);
+	}
 
-		/*
-		 * There is no standard include file for tgetstr, no prototype
-		 * definitions.  I like casting better than using my own prototypes
-		 * because if I guess the prototype, I might be wrong, especially
-		 * with regards to "const".
-		 */
-		term_vi = (char *)tgetstr("vi", &data); // vi - DECTCEM Hide cursor
-		term_ve = (char *)tgetstr("ve", &data); // ve - DECTCEM	Shows the cursor.
+	int ret = tgetent(scratch, term);
+	switch(ret) {
+		default:
+			fprintf(stderr, "tgetent: No termcap database found\n");
+			break;
+		case 0:
+			fprintf(stderr, "tgetent: No termcap entry for terminal '%s'\n", 
+					term);
+			break;
+		case 1:
+			/*
+			 * Make the buffer HUGE, since tgetstr is unsafe.
+			 * Allocate it on the heap too.
+			 */
+			data = buf = malloc(bufSize);
 
-		/* Okay, so I'm paranoid; I just don't like unsafe routines */
-		if (data > buf + bufSize)
-			fatal("tgetstr overflow, you must have a very sick termcap");
+			/*
+			 * There is no standard include file for tgetstr, no prototype
+			 * definitions.  I like casting better than using my own prototypes
+			 * because if I guess the prototype, I might be wrong, especially
+			 * with regards to "const".
+			 */
+			term_vi = (char *)tgetstr("vi", &data); // vi - DECTCEM Hide cursor
+			term_ve = (char *)tgetstr("ve", &data); // ve - DECTCEM	Show cursor
 
-		/* Trim off the unused portion of buffer */
-		buf = realloc(buf, data - buf);
+			/* Okay, so I'm paranoid; I just don't like unsafe routines */
+			if (data > buf + bufSize)
+				fatal("tgetstr overflow, you must have a very sick termcap");
+
+			/* Trim off the unused portion of buffer */
+			buf = realloc(buf, data - buf);
+			break;
 	}
 
 	/*
@@ -145,6 +159,9 @@ ExtFunc void InitScreens(void)
 	 */
 	BlockSignals(&oldMask, SIGINT, 0);
 
+#ifndef HAVE_ENHANCED_CURSES
+	GetTermcapInfo();
+#endif
 	initscr();
 
 #ifdef CURSES_HACK
@@ -174,7 +191,6 @@ ExtFunc void InitScreens(void)
 	}
 #else
 	haveColor = 0;
-	GetTermcapInfo();
 #endif
 
 	AtExit(CleanupScreens);
