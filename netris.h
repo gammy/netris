@@ -27,7 +27,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <signal.h>
-#include "keys.h"
 
 #define ExtFunc		/* Marks functions that need prototypes */
 
@@ -88,6 +87,26 @@ typedef long netint4;
 #define EM_net				000004
 #define EM_robot			000010
 #define EM_any				000777
+
+#define DEFAULT_KEYS "jJklL mspf^ln "
+
+enum { 
+	KT_left, 
+	KT_full_left, 
+	KT_rotate, 
+	KT_right, 
+	KT_full_right, 
+	KT_drop, 
+	KT_down,
+	KT_toggleSpy, 
+	KT_pause, 
+	KT_faster, 
+	KT_redraw, 
+	KT_new, 
+	KT_numKeys 
+};
+
+char keyTable[KT_numKeys + 1];
 
 typedef enum _GameType { GT_onePlayer, GT_classicTwo, GT_len } GameType;
 typedef enum _BlockTypeA { BT_none, BT_white, BT_blue, BT_magenta,
@@ -151,6 +170,14 @@ typedef struct _ShapeOption {
 typedef int (*ShapeDrawFunc)(int scr, int y, int x,
 					BlockType type, void *data);
 
+enum NetType {
+	NET_INVALID,
+	NET_CLIENT,
+	NET_SERVER
+};
+
+int netType;
+
 enum States {
 	STATE_STARTING,
 	STATE_PLAYING,
@@ -158,7 +185,7 @@ enum States {
 	STATE_WAIT_KEYPRESS
 };
 
-EXT GameType game;
+EXT GameType gameType;
 EXT int boardHeight[MAX_SCREENS];
 EXT int boardVisible[MAX_SCREENS], boardWidth[MAX_SCREENS];
 EXT Shape *curShape[MAX_SCREENS];
@@ -182,9 +209,9 @@ extern ShapeOption stdOptions[];
 extern char *version_string;
 
 EXT int myLinesCleared;
-EXT int enemyLinesCleared;
+EXT int opponentLinesCleared;
 EXT int myTotalLinesCleared;
-EXT int enemyTotalLinesCleared;
+EXT int opponentTotalLinesCleared;
 
 #include "proto.h"
 
