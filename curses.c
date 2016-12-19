@@ -31,11 +31,11 @@
 
 #ifdef NCURSES_VERSION
 // PDCurses *also* sets NCURSES_VERSION, and supports the same features
-#define HAVE_ENHANCED_CURSES
+//#define HAVE_ENHANCED_CURSES
 #endif
 
 #ifndef HAVE_ENHANCED_CURSES
-#warn Compiling without enhanced curses support
+#pragma message("Compiling without enhanced curses support")
 
 static char *term_vi;	/* String to make cursor invisible */
 static char *term_ve;	/* String to make cursor visible */
