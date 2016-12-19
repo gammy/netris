@@ -362,8 +362,6 @@ ExtFunc void ShowDisplayInfo(void)
 	clrtoeol();
 
 	if(gameType == GT_onePlayer) {
-		mvprintw(statusYPos - 6, statusXPos, "Won         %3d", 
-				 won);
 		mvprintw(statusYPos - 5, statusXPos, "Lost        %3d", 
 				 lost);
 		mvprintw(statusYPos - 4, statusXPos, "Rows        %3d", 
