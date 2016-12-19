@@ -25,6 +25,9 @@ Answers
 =======
 [1] Where can I find the latest version?
 
+    For gammy's fork, see https://github.com/gammy/netris/; 
+    the original website's been down for some 10+ years by now..
+
     ftp://ftp.netris.org/pub/netris/
 
     The latest version is available via anonymous ftp from
@@ -100,7 +103,8 @@ Answers
 
 [7] Why can't my terminal hide the cursor?
 
-    Netris uses the termcap library to look up the "vi" and "ve"
+    In case of enhanced curses(ncurses, pdcurses) being unavailable,
+    Netris will use the termcap library to look up the "vi" and "ve"
     capabilities, which make the cursor invisible/visible
     respectively.  These capabilities aren't very consistently
     reported among un*xes, so I use compiled-in vt220 codes for

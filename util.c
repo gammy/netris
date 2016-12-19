@@ -66,7 +66,14 @@ ExtFunc void AtExit(void (*handler)(void))
 ExtFunc void Usage(void)
 {
 	fprintf(stderr,
-	  "Netris version %s (C) 1994-1996,1999  Mark H. Weaver <mhw@netris.org>\n"
+	  "Netris version %s (C) 1994-2016  Mark H. Weaver <mhw@netris.org>\n"
+	  "Additional contributors:\n"
+	  "  Piotr Krukowiecki <piotrwww@krukowiecki.net>\n"
+	  "  Per von Zweigbergk\n"
+	  "  David Mosberger <David.Mosberger@acm.org>\n"
+	  "  Brian Brazil <bbrazil@netsoc.tcd.ie>\n"
+	  "  Nathan Aclander <naclander@linux.ucla.edu>\n"
+	  "  gammy <gammy@users.noreply.github.com>\n"
 	  "Usage: netris <options>\n"
 	  "  -h		Print usage information\n"
 	  "  -w		Wait for connection\n"
