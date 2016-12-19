@@ -35,18 +35,14 @@
 #endif
 
 #ifndef HAVE_ENHANCED_CURSES
-#pragma message("Compiling without enhanced curses support")
+#pragma message("Compiling without enhanced curses support - colors disabled")
 
 static char *term_vi;	/* String to make cursor invisible */
 static char *term_ve;	/* String to make cursor visible */
 
 int curs_set(int visibility) {
-	if(visibility == 0)
-		fputs(term_vi, stdout);
-	else {
-		fputs(term_ve, stdout);
-		fflush(stdout);
-	}
+	fputs(visibility == 0 ? term_vi : term_ve, stdout);
+	fflush(stdout);
 	return(0);
 }
 
