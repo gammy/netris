@@ -16,7 +16,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: util.c,v 1.29 1999/05/16 06:56:33 mhw Exp $
  */
 
 #include "netris.h"
@@ -67,7 +66,14 @@ ExtFunc void AtExit(void (*handler)(void))
 ExtFunc void Usage(void)
 {
 	fprintf(stderr,
-	  "Netris version %s (C) 1994-1996,1999  Mark H. Weaver <mhw@netris.org>\n"
+	  "Netris version %s (C) 1994-2016  Mark H. Weaver <mhw@netris.org>\n"
+	  "Additional contributors:\n"
+	  "  Piotr Krukowiecki <piotrwww@krukowiecki.net>\n"
+	  "  Per von Zweigbergk\n"
+	  "  David Mosberger <David.Mosberger@acm.org>\n"
+	  "  Brian Brazil <bbrazil@netsoc.tcd.ie>\n"
+	  "  Nathan Aclander <naclander@linux.ucla.edu>\n"
+	  "  gammy <gammy@users.noreply.github.com>\n"
 	  "Usage: netris <options>\n"
 	  "  -h		Print usage information\n"
 	  "  -w		Wait for connection\n"
@@ -95,7 +101,14 @@ ExtFunc void Usage(void)
 ExtFunc void DistInfo(void)
 {
 	fprintf(stderr,
-	  "Netris version %s (C) 1994-1996,1999  Mark H. Weaver <mhw@netris.org>\n"
+	  "Netris version %s (C) 1994-2016  Mark H. Weaver <mhw@netris.org>\n"
+	  "Additional contributors:\n"
+	  "  Piotr Krukowiecki <piotrwww@krukowiecki.net>\n"
+	  "  Per von Zweigbergk\n"
+	  "  David Mosberger <David.Mosberger@acm.org>\n"
+	  "  Brian Brazil <bbrazil@netsoc.tcd.ie>\n"
+	  "  Nathan Aclander <naclander@linux.ucla.edu>\n"
+	  "  gammy <gammy@users.noreply.github.com>\n"
 	  "\n"
 	  "This program is free software; you can redistribute it and/or modify\n"
 	  "it under the terms of the GNU General Public License as published by\n"

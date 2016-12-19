@@ -16,7 +16,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: sr.c,v 1.10 1996/02/09 08:22:20 mhw Exp $
  */
 
 #include <stdio.h>

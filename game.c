@@ -16,7 +16,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: game.c,v 1.39 1999/05/16 06:56:27 mhw Exp $
  */
 
 #define NOEXT
