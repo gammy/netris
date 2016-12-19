@@ -32,7 +32,7 @@
 
 #ifdef NCURSES_VERSION
 // PDCurses *also* sets NCURSES_VERSION, and supports the same features
-//#define HAVE_ENHANCED_CURSES
+#define HAVE_ENHANCED_CURSES
 #endif
 
 #ifndef HAVE_ENHANCED_CURSES
@@ -265,10 +265,18 @@ ExtFunc void InvertScreen(int scr)
 		int ry = 3 + y;
 		for (x = 0; x < 2 * boardWidth[scr]; x++) {
 			int rx = boardXPos[scr] + x;
-			chtype attrs = mvinch(ry, rx);
+			move(ry, rx);
+			chtype attrs = inch();
+#ifdef HAVE_ENHANCED_CURSES
 			int colorpair = PAIR_NUMBER(attrs);
 			if (colorpair != 0)
-				mvchgat(ry, rx, 1, A_REVERSE, colorpair, NULL);
+				chgat(1, A_REVERSE, colorpair, NULL);
+#else
+			if(attrs != ' ') {
+				attrs ^= A_STANDOUT;
+				addch(attrs);
+			}
+#endif
 		}
 	}
 }
@@ -326,9 +334,19 @@ ExtFunc void PrintStatus(const char *fmt, ...)
 {
 	va_list argp;
 	move(statusYPos - 1, statusXPos);
+
+#ifdef HAVE_ENHANCED_CURSES
 	va_start(argp, fmt);
 	vw_printw(stdscr, fmt, argp);
 	va_end(argp);
+#else
+	char tmp[64];
+	va_start(argp, fmt);
+	vsnprintf(tmp, 64, fmt, argp); // "At most 64 bytes, including NULL"
+	va_end(argp);
+	printw(tmp);
+#endif
+
 	clrtoeol();
 	refresh();
 }
