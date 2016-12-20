@@ -168,8 +168,12 @@ ExtFunc void OneGame(int scr, int scr2)
 					if (!p)
 						break;
 				keyEvent:
-					if (paused && (key != KT_pause) && (key != KT_redraw))
-						break;
+					if (paused) {
+						if (key == KT_quit)
+							exit(0);
+						if (key != KT_pause && key != KT_redraw)
+							break;
+					}
 					switch(key) {
 						case KT_left:
 							if (MovePiece(scr, 0, -1) && spied)
@@ -601,8 +605,13 @@ ExtFunc int main(int argc, char **argv)
 			ShowDisplayInfo();
 			PrintStatus("Press '%c' for a new game.", keyTable[KT_new]);
 			RefreshScreen();
-			while(getchar() != keyTable[KT_new])
-				;
+			for(;;) {
+				int key = getchar();
+				if(key == keyTable[KT_new])
+					break;
+				if(key == keyTable[KT_quit])
+					exit(0);
+			}
 		}
 	}
 
