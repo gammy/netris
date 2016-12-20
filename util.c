@@ -1,6 +1,6 @@
 /*
  * Netris -- A free networked version of T*tris
- * Copyright (C) 1994,1995,1996  Mark H. Weaver <mhw@netris.org>
+ * Copyright (C) 1994-2016  Mark H. Weaver et al
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -101,7 +101,7 @@ ExtFunc void Usage(void)
 ExtFunc void DistInfo(void)
 {
 	fprintf(stderr,
-	  "Netris version %s (C) 1994-2016  Mark H. Weaver <mhw@netris.org>\n"
+	  "Netris version %s (C) 1994-2016 Mark H. Weaver <mhw@netris.org>\n"
 	  "Additional contributors:\n"
 	  "  Piotr Krukowiecki <piotrwww@krukowiecki.net>\n"
 	  "  Per von Zweigbergk\n"
