@@ -1,6 +1,6 @@
 /*
  * Netris -- A free networked version of T*tris
- * Copyright (C) 1994-1996,1999  Mark H. Weaver <mhw@netris.org>
+ * Copyright (C) 1994-2016  Mark H. Weaver et al
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
