@@ -42,7 +42,10 @@ static char *term_vi;	/* String to make cursor invisible */
 static char *term_ve;	/* String to make cursor visible */
 
 int curs_set(int visibility) {
-	fputs(visibility == 0 ? term_vi : term_ve, stdout);
+    char *code = visibility == 0 ? term_vi: term_ve;
+    if(! code)
+        return(1);
+	fputs(code, stdout);
 	fflush(stdout);
 	return(0);
 }
