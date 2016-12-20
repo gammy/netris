@@ -69,6 +69,9 @@ Fix a long-standing bug where network games with differing machine word-sizes
  had numerous problems, the most noticable being -i (speed) and -s (seed) 
  not working, and players getting different blocks
 Add the ability to quit by pressing 'q'
+Respect user-defined ("default") terminal colors 
+Cosmetic altering of status information and scoring
+Numerous bugfixes and cleanups
 
 
 NEW IN VERSION 0.52-15
