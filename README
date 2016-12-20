@@ -58,17 +58,20 @@ how it goes, and send me diffs if needed!
 
 See the FAQ in this directory if you have any problems.
 
-NEW IN VERSION 0.52-18
-======================
+NEW IN VERSION 0.55g
+====================
 Use annotated git tag + number of commits since the latest annotated tag to
-generate the version number - if git is available and a reasonable tag exists
-Add contributors (from git log) to the README
-
-
-NEW IN VERSION 0.52-17
-======================
+ generate the version number - if git is available and a reasonable tag exists
+Add contributors (from git log) to numerous locations
 Invert board colors after a match, to indicate that it's ended
 Show which key to press to start a new network game
+Fix a long-standing bug where network games with differing machine word-sizes
+ had numerous problems, the most noticable being -i (speed) and -s (seed) 
+ not working, and players getting different blocks
+Add the ability to quit by pressing 'q'
+Respect user-defined ("default") terminal colors 
+Cosmetic altering of status information and scoring
+Numerous bugfixes and cleanups
 
 
 NEW IN VERSION 0.52-15
@@ -140,6 +143,7 @@ The keys are:
  Ctrl-L	redraw the screen
  'n' 	start a new network game (only available 
                                   after a network game has ended)
+ 'q' 	quit the game
 
 To see usage information, type "netris -h".
 To see distribution/warranty information, type "netris -H".
@@ -148,7 +152,7 @@ To use a port number other than the default, use the -p option.
 
 You can remap the keys with "-k <keys>", where <keys> is a string
 containing the keys in the order listed above.  The default is:
-    netris -k "jJklL mspf^ln"
+    netris -k "jJklL mspf^lnq"
 
 You needn't specify all of the keys, for example -k "asd" will only
 change the main three keys.  "^x" notation can be used for control

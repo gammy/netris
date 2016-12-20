@@ -1,6 +1,6 @@
 /*
  * Netris -- A free networked version of T*tris
- * Copyright (C) 1994,1995,1996  Mark H. Weaver <mhw@netris.org>
+ * Copyright (C) 1994-2016  Mark H. Weaver et al
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@
 
 static char *keyNames[KT_numKeys+1] = {
 	"Left", "FullLeft","Rotate", "Right", "FullRight", "Drop", "Down", "ToggleSpy", "Pause",
-	"Faster", "Redraw", "New", NULL };
+	"Faster", "Redraw", "New", "Quit", NULL };
 
 static char *gameNames[GT_len] = { "OnePlayer", "ClassicTwo" };
 
@@ -242,6 +242,10 @@ ExtFunc void OneGame(int scr, int scr2)
 							if (paused)
 								RefreshScreen();
 							break;
+						case KT_quit:
+							exit(0);
+							break;
+
 					}
 					if (dropMode && DropPiece(scr) > 0) {
 						if (spied)

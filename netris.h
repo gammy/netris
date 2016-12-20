@@ -1,6 +1,6 @@
 /*
  * Netris -- A free networked version of T*tris
- * Copyright (C) 1994-1996,1999  Mark H. Weaver <mhw@netris.org>
+ * Copyright (C) 1994-2016  Mark H. Weaver et al
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,7 +16,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: netris.h,v 1.28 1999/05/16 06:56:29 mhw Exp $
  */
 
 #ifndef NETRIS_H
@@ -89,7 +88,7 @@ typedef uint32_t netint4;
 #define EM_robot			000010
 #define EM_any				000777
 
-#define DEFAULT_KEYS "jJklL mspf^ln "
+#define DEFAULT_KEYS "jJklL mspf^lnq "
 
 enum { 
 	KT_left, 
@@ -104,6 +103,7 @@ enum {
 	KT_faster, 
 	KT_redraw, 
 	KT_new, 
+	KT_quit,
 	KT_numKeys 
 };
 
