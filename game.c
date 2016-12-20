@@ -457,6 +457,7 @@ ExtFunc int main(int argc, char **argv)
 	}
 	if (fairRobot && !robotEnable)
 		fatal("You can't use the -F option without the -r option");
+
 	InitUtil();
 	InitScreens();
 	while(!done) {
