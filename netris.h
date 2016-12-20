@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <signal.h>
+#include <stdint.h>
 
 #define ExtFunc		/* Marks functions that need prototypes */
 
@@ -54,8 +55,8 @@ typedef int MySigSet;
  * to deal with this problem, so I've added an abstraction layer.
  */
 
-typedef short netint2;
-typedef long netint4;
+typedef uint16_t netint2;
+typedef uint32_t netint4;
 
 #define hton2(x) htons(x)
 #define hton4(x) htonl(x)
@@ -195,8 +196,8 @@ EXT int standoutEnable, colorEnable;
 EXT int robotEnable, robotVersion, fairRobot;
 EXT int protocolVersion;
 
-EXT long initSeed;
-EXT long stepDownInterval, speed;
+EXT int initSeed;
+EXT uint32_t stepDownInterval, speed;
 
 EXT int myFlags, opponentFlags;
 
