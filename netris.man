@@ -1,0 +1,106 @@
+.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH netris 1 "JANUARY 2017" Netris "Games"
+.SH NAME
+netris - a free networked version of T*tris
+
+.SH SYNOPSIS
+
+.B netris [-w] [-c \fIhost\fR] [...]
+
+.SH DESCRIPTION
+.B Netris
+is a two-player t*tris terminal game. Unlike standard T*tris, Netris gives you a little extra time after dropping a piece before it solidifies.  This allows you to slide the piece into a notch without waiting for it to fall the whole way down.  In fact, you can even slide it off a cliff and it'll start falling again.  If you think it should automatically drop again in this case, use the
+.B -D
+option.
+
+.SH OPTIONS
+.TP
+.BR \-h
+Print usage information
+.TP
+.BR \-w
+Wait for connection
+.TP
+.BR \-c\ \fIhost\fR
+Initiate connection
+.TP
+.BR -p\ \fIport\fR
+Set port number (default is \fB9284\fR)
+.TP
+.BR \-k\ \fIkeys\fR
+Remap keys. The argument is a prefix of the string containing the keys in order: left, full left, rotate, right, full right, drop, down-faster, toggle-spying, pause, faster, redraw, new.  "\fB^\fR" prefixes controls.  (default is "\fBjJklL mspf^lnq \fR")
+.TP
+.BR -i\ \fIsec\fR
+Set the step-down interval, in seconds
+.TP
+.BR -r\ \fIrobot\fR
+Execute <robot> (a command) as a robot controlling the game instead of the keyboard
+.TP
+.BR -F
+Use fair robot interface
+.TP
+.BR -s\ \fIseed\fR
+Start with given random seed
+.TP
+.BR -D
+Drops go into drop mode This means that sliding off a cliff after a drop causes another drop automatically
+.TP
+.BR -S
+Disable inverse/bold/color for slow terminals
+.TP
+.BR -C
+Disable color
+.TP
+.BR -H
+Show distribution and warranty information
+.TP
+.BR -R
+Show rules
+
+.SH RUNNING
+To start a two-player game, do the following:
+ 1. Player 1 types "netris -w".  This means "wait for challenge".
+ 2. Player 2 types "netris -c <host>" where <host> is the hostname
+    of Player 1.  This means "challenge".
+
+To start a one-player game, run netris with no parameters. One-player mode is a tad boring at the moment, because it never gets any faster, and there's no scoring. This will be rectified at some point. For now, use the "f" key (by default) to make the game go faster. Speedups cannot be reversed for the remainder of the game.
+
+.SH KEYS
+
+ \fBj\fR        Left
+ \fBJ\fR        Full left
+ \fBk\fR        Rotate
+ \fBl\fR        Right
+ \fBL\fR        Full right
+ \fBSpace\fR    Drop
+ \fBm\fR        Down faster
+ \fBs\fR        Toggle spying on the other player
+ \fBp\fR        Pause
+ \fBf\fR        Make game faster (irreversible)
+ \fBCtrl-L\fR   Redraw the screen
+ \fBn\fR        Start a new network game 
+          (only available after a network game has ended)
+ \fBq\fR        Quit
+
+.SH COPYRIGHT
+Copyright (C) 1994-2017 Mark H. Weaver et al.
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+ 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ 
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+.SH AUTHOR
+Mark H. Weaver <mhw@netris.org>
+
+Additional contributors
+
+ Piotr Krukowiecki <piotrwww@krukowiecki.net>>
+ Per von Zweigbergk
+ David Mosberger <David.Mosberger@acm.org>
+ Brian Brazil <bbrazil@netsoc.tcd.ie>
+ Nathan Aclander <naclander@linux.ucla.edu>
+ gammy <gammy@users.noreply.github.com>
