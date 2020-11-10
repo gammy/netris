@@ -1,0 +1,114 @@
+.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH netris 1 "JANUARY 2017" Netris "Games"
+.SH NAME
+netris - a free networked version of T*tris
+
+.SH SYNOPSIS
+
+.B netris [-w] [-c \fIhost\fR] [...]
+
+.SH DESCRIPTION
+\fBNetris\fR is a T*tris terminal game for one player, or two players over a network. Unlike standard T*tris, Netris gives you a little extra time after dropping a piece before it solidifies. This allows you to slide the piece into a notch without waiting for it to fall the whole way down. In fact, you can even slide it off a cliff and it'll start falling again. If you think it should automatically drop again in this case, use the
+.B -D
+option. 
+
+One-player mode is a tad boring at the moment, because it never gets any faster, and there's no scoring. This will be rectified at some point. For now, use the \fBf\fR key (by default) to make the game go faster. Speedups cannot be reversed for the remainder of the game.
+
+In two-player mode, when you clear more than one row with a single piece, the other player's board is moved up and junk rows are added to the bottom. If you clear 2, 3 or 4 rows, 1, 2 or 4 junk rows are added to your opponent's board, respectively. The junk rows have exactly one empty column. For each group of junk rows given, the empty columns will line up. The longest surviving player wins the game.
+
+.SH OPTIONS
+.TP
+.BR \-h
+Print usage information
+.TP
+.BR \-w
+Wait for connection
+.TP
+.BR \-c\ \fIhost\fR
+Initiate a connection to \fIhost\fR
+.TP
+.BR -p\ \fIport\fR
+Set port number to \fIport\fR (default is \fB9284\fR)
+.TP
+.BR \-k\ \fIkeys\fR
+Remap keys. \fIkeys\fR is a prefix of the string containing the keys in order: left, full left, rotate, right, full right, drop, down-faster, toggle-spying, pause, faster, redraw, new.  "\fB^\fR" prefixes a control character.  (default is "\fBjJklL mspf^lnq \fR")
+.TP
+.BR -i\ \fIsecs\fR
+Set the step-down interval to \fIsecs\fR seconds. (default is \fB0.3\fR)
+.TP
+.BR -r\ \fIrobot\fR
+Execute \fIrobot\fR (a command) as a robot controlling the game instead of the keyboard
+.TP
+.BR -F
+Use fair robot interface
+.TP
+.BR -s\ \fIseed\fR
+Start with the given random seed \fIseed\fR
+.TP
+.BR -D
+Go into drop mode. This means that sliding off a cliff after a drop causes another drop automatically
+.TP
+.BR -S
+Disable inverse/bold/color for slow terminals
+.TP
+.BR -C
+Disable color
+.TP
+.BR -H
+Show distribution and warranty information
+.TP
+.BR -R
+Show rules
+
+.SH KEYS
+
+ \fBj\fR        Left
+ \fBJ\fR        Full left
+ \fBk\fR        Rotate
+ \fBl\fR        Right
+ \fBL\fR        Full right
+ \fBSpace\fR    Drop
+ \fBm\fR        Down faster
+ \fBs\fR        Toggle spying on the other player
+ \fBp\fR        Pause
+ \fBf\fR        Make game faster (irreversible)
+ \fBCtrl-L\fR   Redraw the screen
+ \fBn\fR        Start a new network game 
+          (only available after a network game has ended)
+ \fBq\fR        Quit
+
+.SH EXAMPLE
+To start a two-player game, do the following:
+ 1. Player 1 types "netris -w".  This means "wait for challenge".
+ 2. Player 2 types "netris -c <host>" where <host> is the hostname
+    of Player 1.  This means "challenge".
+
+To start a one-player game, run netris with no parameters. 
+
+.SH NOTES
+This man-page is based on the original Netris README, but is (or was, originally) written for gammy's fork.
+
+There is currently no way to have a two-player game on one terminal; two people can't share a keyboard.
+
+.SH COPYRIGHT
+Copyright (C) 1994-2017 Mark H. Weaver et al.
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+ 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ 
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+.SH AUTHOR
+Mark H. Weaver <mhw@netris.org>
+
+Additional contributors
+
+ Piotr Krukowiecki <piotrwww@krukowiecki.net>>
+ Per von Zweigbergk
+ David Mosberger <David.Mosberger@acm.org>
+ Brian Brazil <bbrazil@netsoc.tcd.ie>
+ Nathan Aclander <naclander@linux.ucla.edu>
+ gammy <gammy@users.noreply.github.com>
