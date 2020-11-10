@@ -39,7 +39,7 @@ static char netBuf[64];
 static int netBufSize, netBufGoal = HEADER_SIZE;
 static int lostConn, gotEndConn;
 
-EXT netType;
+EXT int netType;
 
 ExtFunc void InitNet(void)
 {
