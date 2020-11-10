@@ -365,17 +365,17 @@ ExtFunc void ShowDisplayInfo(void)
 	clrtoeol();
 
 	if(gameType == GT_onePlayer) {
-		mvprintw(statusYPos - 5, statusXPos, "Lost        %3d", 
+		mvprintw(statusYPos - 5, statusXPos, "Games lost       %3d", 
 				 lost);
-		mvprintw(statusYPos - 4, statusXPos, "Rows        %3d", 
+		mvprintw(statusYPos - 4, statusXPos, "Rows (this game) %3d", 
 				 myLinesCleared);
-		mvprintw(statusYPos - 3, statusXPos, "Rows (total)%3d", 
+		mvprintw(statusYPos - 3, statusXPos, "Rows (all games) %3d", 
 				 myTotalLinesCleared);
 	} else {
-		move(statusYPos - 7, statusXPos + 10);
-		addstr(robotEnable ? "Robot" : "   Me");
+		move(statusYPos - 7, statusXPos + 15);
+		addstr(robotEnable ? "Robot" : "  You");
 
-		move(statusYPos - 7, statusXPos + 17);
+		move(statusYPos - 7, statusXPos + 24);
 		if((opponentFlags & SCF_usingRobot)) {
 			addstr("   Robot");
 			if(opponentFlags & SCF_fairRobot)
@@ -384,11 +384,11 @@ ExtFunc void ShowDisplayInfo(void)
 			addstr("Opponent");
 		clrtoeol();
 
-		mvprintw(statusYPos - 6, statusXPos, "Won         %3d", 
+		mvprintw(statusYPos - 6, statusXPos, "Games won        %3d", 
 				 won);
-		mvprintw(statusYPos - 5, statusXPos, "Rows        %3d", 
+		mvprintw(statusYPos - 5, statusXPos, "Rows (this game) %3d", 
 				 myLinesCleared);
-		mvprintw(statusYPos - 4, statusXPos, "Rows (total)%3d", 
+		mvprintw(statusYPos - 4, statusXPos, "Rows (all games) %3d", 
 				 myTotalLinesCleared);
 
 		mvprintw(statusYPos - 6, statusXPos + 22, "%3d", 
