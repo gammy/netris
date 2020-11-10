@@ -58,6 +58,20 @@ how it goes, and send me diffs if needed!
 
 See the FAQ in this directory if you have any problems.
 
+NEW IN VERSION 0.56g
+====================
+Fix a bug where a crash would occurr if all attempts to find any way to toggle 
+ the cursor visibility failed (i.e No enhanced curses and TERM==sun)
+Make 'q' key work while game is paused, and after a game has ended (still
+ won't work while waiting for an opponent, or when an opponent quit a paused
+ game)
+Manpage improvements
+Rename the manpage to put it in category 6 (games)
+Fix netris not building on newer (2020) versions of gcc due to redeclarations 
+ in header files. Thanks seanh on the AUR for reporting this
+Minor UI changes
+
+
 NEW IN VERSION 0.55g
 ====================
 Use annotated git tag + number of commits since the latest annotated tag to
