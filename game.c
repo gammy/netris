@@ -27,6 +27,9 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 
+int netType;
+char keyTable[KT_numKeys + 1];
+
 static char *keyNames[KT_numKeys+1] = {
 	"Left", "FullLeft","Rotate", "Right", "FullRight", "Drop", "Down", "ToggleSpy", "Pause",
 	"Faster", "Redraw", "New", "Quit", NULL };
