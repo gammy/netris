@@ -107,7 +107,7 @@ enum {
 	KT_numKeys 
 };
 
-char keyTable[KT_numKeys + 1];
+EXT char keyTable[KT_numKeys + 1];
 
 typedef enum _GameType { GT_onePlayer, GT_classicTwo, GT_len } GameType;
 typedef enum _BlockTypeA { BT_none, BT_white, BT_blue, BT_magenta,
@@ -177,7 +177,7 @@ enum NetType {
 	NET_SERVER
 };
 
-int netType;
+EXT int netType;
 
 enum States {
 	STATE_STARTING,
